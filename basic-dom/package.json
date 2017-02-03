@@ -1,0 +1,20 @@
+{
+  "name": "basic-dom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-css": "node-sass --include-path scss scss/styles.scss public/css/styles.css",
+    "watch-node-sass": "node-sass --watch scss/styles.scss --output public/css/  --source-map true",
+    "start-test": "browser-sync start --directory --server --files '*.js, *.html, *.css'",
+    "start": "browser-sync start --browser \"google chrome\" --server 'public' --files 'public'",
+    "boom!": "concurrently \"npm run start\" \"npm run watch-node-sass\" "
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.18.7",
+    "concurrently": "^3.1.0",
+    "node-sass": "^4.4.0"
+  }
+}
