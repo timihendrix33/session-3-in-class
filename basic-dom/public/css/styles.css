@@ -82,6 +82,8 @@ header {
   display: flex;
   align-items: center;
   justify-content: center; }
+  header div {
+    background: rgba(255, 255, 255, 0.5); }
   @media screen and (min-width: 46.25em) {
     header {
       height: 40vh;

@@ -6,8 +6,10 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  div {
+    background: rgba(255,255,255,0.5);
+  }
   @media screen and (min-width: $break-two) {
-    // background-size: 100% auto;
     height: 40vh;
     background-attachment: fixed;
   }
