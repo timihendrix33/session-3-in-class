@@ -1,10 +1,6 @@
-#Session 3 coming soon
+#Session 3
 
-https://zellwk.com/blog/crud-express-mongodb/
-https://zellwk.com/blog/crud-express-and-mongodb-2/
-
-Error: listen EADDRINUSE :::3000
-
+##Responsive Navigation
 
 Move all nav related css into a new partial `_nav.scss` and import:
 
@@ -368,3 +364,5 @@ Suggested clients: Cyberduck, FileZilla
 
 
 
+https://zellwk.com/blog/crud-express-mongodb/
+https://zellwk.com/blog/crud-express-and-mongodb-2/
