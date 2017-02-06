@@ -1,244 +1,5 @@
 #Session 3
 
-$0.classList
-
-window.matchMedia('only screen and (max-width: 700px)')
-
-window.matchMedia('only screen and (max-width: 700px)').matches
-
-##Responsive Navigation
-
-Move all nav related css into a new partial `_nav.scss` and import:
-
-`@import "imports/nav";`
-
-
-Nest the CSS rules:
-
-```css
-nav {
-  display: flex;
-  background: #007eb6;
-  top: 0;
-  width: 100%;
-  transition: all 0.5s;
-  position: relative;
-  z-index: 1; 
-  .fixed-nav & {
-    position: fixed;
-    box-shadow: 0 5px 3px rgba(0, 0, 0, 0.1); 
-  }
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    min-height: 2.25rem; 
-  }
-  li {
-    flex: 1;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-  }
-  a {
-    text-decoration: none;
-    display: inline-block;
-    color: white; 
-  }
-}
-
-.logo {
-  max-width:0;
-  overflow: hidden;
-  transition: all 0.5s;
-  img {
-    padding-top: 0.25rem;
-    width: 2rem;
-    margin-left: 0.5rem;
-  }
-  .fixed-nav & {
-    max-width:500px;
-  }
-}
-
-```
-
-Flip the `<ul>` flex direction on small screens to column:
-
-```css
-  ul {
-    ...
-    flex-direction: column;
-    @media screen and (min-width: $break-two) {
-      flex-direction: row;
-    }
-  }
-```
-
-Hide the nav-liks initially on small screens while maintaining the flex display characteristics on wide:
-
-```css
-  ul {
-    ...
-    display: none;
-    // display: flex;
-    @media (min-width: $break-two){
-      display: flex;
-      flex-direction: row;
-    }
-  }
-```
-
-Show the logo in small screens to use as a button (e.g. hamburger icon) to show the menu:
-
-```css
-.logo {
-	display: block;
-	max-width:100%;
-	img {
-		padding: 0.25rem;
-		width: 2rem;
-	}
-	@media (min-width: $break-two) {
-		max-width: 0;
-		overflow: hidden;
-	}
-}
-```
-
-Make clicking on the logo show the menu on narrow screens:
-
-```js
-const logo = document.querySelector('.logo');
-if (document.documentElement.clientWidth <= 740) {
-  logo.addEventListener('click', showMenu);
-}
-
-function showMenu(e){
-  if (window.matchMedia('only screen and (max-width: 740px)').matches){
-    document.body.classList.toggle('show');
-  }
-  e.preventDefault();
-}
-```
-
-Add to `_nav.scss`:
-
-```
-.show #main ul {
-  display: block !important;
-}
-```
-
-
-Adjust the display of the list items moving most of the existing CSS into the media query.
-
-```css
-	li {
-		padding: 0.5rem;
-		align-items: center; 
-		@media screen and (min-width: $break-two) {
-			display: flex;
-			flex: 1;
-			justify-content: center;
-			text-align: center;
-		}
-	}
-```
-
-Remove display: flex from the default state of nav and at it to the wide screen only:
-
-```css
-nav {
-  ...
-  // display: flex;
-  @media screen and (min-width: $break-two){
-    display: flex;
-  }
-```
-
-Add a call to showMenu() after the hash change (also pass the event so we can send it to showMenu where it is needed):
-
-```js
-window.onhashchange = function() {
-  let newloc = window.location.hash;
-  let newContent = navItems.filter(navItem => navItem.link == newloc);
-  siteWrap.innerHTML = `
-  <h1>${newContent[0].label}</h1>
-  <h2>${newContent[0].header}</h2>
-  <p>${newContent[0].content}</p>
-  `;
-  document.body.classList.remove('show');
-}
-```
-
-
-##Remember the viewport META tag
-
-* Use the meta tag `<meta name="viewport" content="width=device-width, initial-scale=1.0">` to ensure this works on devices
-
-* Chrome device toolbar
-
-* http://daniel.deverell.com/barcap/public
-
-
-##SASS Links
-
-[The SASS Way](http://thesassway.com)
-
-[Responsive Design Patterns](https://bradfrost.github.io/this-is-responsive/)
-
-
-##Babel
-
-Install the dependencies babel-cli and babel-preset-es2015 and add presets to package.json:
-
-```
-{
-  "name": "basic-dom-dd2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "watch-node-sass": "node-sass --watch scss/styles.scss --output public/css/  --source-map true",
-    "start": "browser-sync start --browser \"google chrome\" --server 'public' --files 'public'",
-    "babel": "babel app.js --watch --out-file test.js",
-    "boom!": "concurrently \"npm run start\" \"npm run watch-node-sass\" "
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-cli": "^6.22.2",
-    "babel-preset-es2015": "^6.22.0",
-    "browser-sync": "^2.18.6",
-    "concurrently": "^3.1.0",
-    "node-sass": "^4.4.0"
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
-  }
-}
-
-```
-
-Compile the js into the public/js directory:
-
-```
-"babel": "babel app.js --watch --out-file public/js/main.js",
-```
-
-Add babel to our concurrent commands:
-
-```
-"boom!": "concurrently \"npm run start\" \"npm run watch-node-sass\"  \"npm run babel\" "
-```
-
-
-
 ##GIT and GITHUB
 
 Since we've just created a nice reusable setup we should save it. 
@@ -333,6 +94,312 @@ Finally - when downloading a github repo use the `clone` method to move it to yo
 Use of MSCode as a Git / diff client?
 
 
+##Responsive Navigation
+
+Move all nav related css into a new partial `_nav.scss` and import:
+
+`@import "imports/nav";`
+
+
+Nest the CSS rules:
+
+```css
+nav {
+  display: flex;
+  background: #007eb6;
+  top: 0;
+  width: 100%;
+  transition: all 0.5s;
+  position: relative;
+  z-index: 1; 
+  .fixed-nav & {
+    position: fixed;
+    box-shadow: 0 5px 3px rgba(0, 0, 0, 0.1); 
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    min-height: 2.25rem; 
+  }
+  li {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+  }
+  a {
+    text-decoration: none;
+    display: inline-block;
+    color: white; 
+  }
+}
+
+.logo {
+  max-width:0;
+  overflow: hidden;
+  transition: all 0.5s;
+  img {
+    padding-top: 0.25rem;
+    width: 2rem;
+    margin-left: 0.5rem;
+  }
+  .fixed-nav & {
+    max-width:500px;
+  }
+}
+
+```
+
+Get the navigation to display vertically on small screens. 
+
+Flip the default  `<ul>` flex direction to column:
+
+```css
+  ul {
+    ...
+    flex-direction: column;
+    @media screen and (min-width: $break-two) {
+      flex-direction: row;
+    }
+  }
+```
+
+Hide the nav-liks initially on small screens while maintaining the flex display characteristics on wide:
+
+```css
+  ul {
+    ...
+    display: none;
+    // display: flex;
+    @media (min-width: $break-two){
+      display: flex;
+      flex-direction: row;
+    }
+  }
+```
+
+Show the logo in small screens to use as a button (e.g. hamburger icon) to show the menu:
+
+```css
+.logo {
+	display: block;
+	max-width:100%;
+	img {
+		padding: 0.25rem;
+		width: 2rem;
+	}
+	@media (min-width: $break-two) {
+		max-width: 0;
+		overflow: hidden;
+	}
+}
+```
+
+Make clicking on the logo show the menu on narrow screens:
+
+```
+$0.classList
+
+window.matchMedia('only screen and (max-width: 700px)')
+
+window.matchMedia('only screen and (max-width: 700px)').matches
+```
+
+```js
+const logo = document.querySelector('.logo');
+if (document.documentElement.clientWidth <= 740) {
+  logo.addEventListener('click', showMenu);
+}
+
+function showMenu(e){
+  if (window.matchMedia('only screen and (max-width: 740px)').matches){
+    document.body.classList.toggle('show');
+  }
+  e.preventDefault();
+}
+```
+
+Add to `_nav.scss`:
+
+```
+.show #main ul {
+  display: block !important;
+}
+```
+
+
+Adjust the display of the list items moving most of the existing CSS into the media query.
+
+```css
+	li {
+		padding: 0.5rem;
+		align-items: center; 
+		@media screen and (min-width: $break-two) {
+			display: flex;
+			flex: 1;
+			justify-content: center;
+			text-align: center;
+		}
+	}
+```
+
+Remove display: flex from the default state of nav and at it to the wide screen only:
+
+```css
+nav {
+  ...
+  // display: flex;
+  @media screen and (min-width: $break-two){
+    display: flex;
+  }
+```
+
+Hide the hamburger icon after it has been clicked on:
+
+```js
+window.onhashchange = function() {
+  let newloc = window.location.hash;
+  let newContent = navItems.filter(navItem => navItem.link == newloc);
+  siteWrap.innerHTML = `
+  <h1>${newContent[0].label}</h1>
+  <h2>${newContent[0].header}</h2>
+  <p>${newContent[0].content}</p>
+  `;
+  document.body.classList.remove('show');
+}
+```
+
+Other cleanup items?
+
+Maximize space:
+
+```
+.site-wrap {
+  max-width: 780px;
+  margin: 10px auto;
+  background: white;
+  padding: 10px;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.05);
+  transform: scale(0.98);
+  transition: transform 0.5s;
+  @media (min-width: $break-two){
+    padding: 10px;
+    margin: 20px auto;
+  }
+  body.fixed-nav & {
+    transform: scale(1); 
+  }
+  h1, h2 {
+    font-weight: normal;
+  }
+  ul {
+    padding: 1rem;
+  }
+}
+```
+
+Make the menu overlay the content:
+
+```
+  ul {
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: none;
+    flex:1;
+    min-height: 2.25rem;
+    position: absolute;
+    background: #007eb6;
+    z-index: 1000;
+    width: 100%;
+    @media screen and (min-width: $break-two) {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+```
+
+
+##Remember the viewport META tag
+
+* Use the meta tag `<meta name="viewport" content="width=device-width, initial-scale=1.0">` to ensure this works on devices
+
+* Chrome device toolbar
+
+* http://daniel.deverell.com/barcap/public
+
+
+##SASS Links
+
+[The SASS Way](http://thesassway.com)
+
+[Responsive Design Patterns](https://bradfrost.github.io/this-is-responsive/)
+
+
+##Babel
+
+Install the dependencies babel-cli and babel-preset-es2015 and add presets to package.json.
+
+`$ sudo npm install babel-cli --save-dev`
+
+`$ sudo npm install --save-dev babel-preset-es2015`
+
+Here is the documentation for [babel-cli](https://babeljs.io/docs/usage/cli/)
+
+
+
+```
+{
+  "name": "basic-dom-dd2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch-node-sass": "node-sass --watch scss/styles.scss --output public/css/  --source-map true",
+    "start": "browser-sync start --browser \"google chrome\" --server 'public' --files 'public'",
+    "babel": "babel public/js/main.js --watch --out-file public/js/main-compiled.js",
+    "boom!": "concurrently \"npm run start\" \"npm run watch-node-sass\" "
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-preset-es2015": "^6.22.0",
+    "browser-sync": "^2.18.6",
+    "concurrently": "^3.1.0",
+    "node-sass": "^4.4.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  }
+}
+
+```
+
+Add babel to our concurrent commands:
+
+```
+"boom!": "concurrently \"npm run start\" \"npm run watch-node-sass\"  \"npm run babel\" "
+```
+
+Add source map support and compile to its own directory:
+
+```
+    "babel": "babel public/js/main.js --watch --source-maps --out-file public/js/min/main-compiled.js",
+```
+
+Change the link to the js in index.html to point to the new file.
+
+`<script src="js/min/main-compiled.js"></script>`
+
+
+
 ##NODE and Express JS
 
 #NODE
@@ -362,6 +429,8 @@ server.listen(port, hostname, () => {
 
 
 ##Express
+
+The server we are using (browser sync's) won't cut it when it comes to all the features needed to develop a website with all the http services we need.
 
 Express is a framework for building web applications on top of Node.js. It simplifies the server creation process that is already available in Node. Node allows you to use JavaScript as your server-side language.
 
