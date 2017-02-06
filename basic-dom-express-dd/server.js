@@ -3,6 +3,8 @@ const bodyParser= require('body-parser')
 const app = express();
 const MongoClient = require('mongodb').MongoClient;
 
+var db
+
 MongoClient.connect('mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', (err, database) => {
 	if (err) return console.log(err)
 		db = database

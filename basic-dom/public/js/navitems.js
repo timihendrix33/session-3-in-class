@@ -2,7 +2,6 @@ const navItems = [
 {
   label: 'Watchlist',
   link: '#watchlist',
-  navid: '0',
   header: 'Market intelligence now revolves around what you need',
   content: `
   <ul>
@@ -16,7 +15,6 @@ const navItems = [
 {
   label: 'Research',
   link: '#research',
-  navid: '1',
   header: 'Accessing your content has never been easier',
   content: `
   <ul>
@@ -30,7 +28,6 @@ const navItems = [
 {
   label: 'Markets',
   link: '#markets',
-  navid: '2',
   header: 'The pulse of the market is right at your fingertips',
   content: `
   <ul>
@@ -44,7 +41,6 @@ const navItems = [
 {
   label: 'Workbook',
   link: '#workbook',
-  navid: '3',
   header: 'Save and organize content for offline reading',
   content: `
   <ul>
@@ -57,7 +53,6 @@ const navItems = [
 {
   label: 'Connect',
   link: '#connect',
-  navid: '4',
   header: 'A new interactive experience',
   content: `
   <ul>
@@ -70,7 +65,6 @@ const navItems = [
 {
   label: 'Desktop',
   link: '#desktop',
-  navid: '5',
   header: 'Start on your tablet, continue on the desktop',
   content: `
   <ul>
@@ -82,7 +76,6 @@ const navItems = [
 {
   label: 'FAQ',
   link: '#faq',
-  navid: '6',
   header: 'FAQ',
   content: `
   <ul>
@@ -90,17 +83,5 @@ const navItems = [
   <li>View your Watchlist, your Workbook and Connect from the tablet and the desktop</li>
   <li>Create charts on the desktop and view them on the app</li>
   </ul>`
-},
-{
-  label: 'Reviews',
-  link: '#reviews',
-  navid: '7',
-  header: 'Reviews',
-  content: `
-  <form action="/quotes" method="POST">
-    <input type="text" placeholder="name" name="name">
-    <input type="text" placeholder="review" name="quote">
-    <button type="submit">Submit</button>
-  </form>`
 }
 ];
