@@ -432,14 +432,20 @@ server.listen(port, hostname, () => {
 
 The server we are using (browser sync's) won't cut it when it comes to all the features needed to develop a website with all the http services we need.
 
-Express is a framework for building web applications on top of Node.js. It simplifies the server creation process that is already available in Node. Node allows you to use JavaScript as your server-side language.
+Express is a framework for building web applications on top of Node.js. It simplifies the server creation process that is already available in Node and allows you to use JavaScript as your server-side language.
+
+Aside - Here is the [generator](https://expressjs.com/en/starter/generator.html). Note the directory structure and the use of [Jade](http://learnjade.com) as a template tool. Here's a [Jade converter](http://www.html2jade.org). Note: Jade has been renamed to Pug due to a software trademark claim.
 
 Let's look at the canonical "Hello world" [example](https://expressjs.com/en/starter/hello-world.html).
+
+Install express using npm `$ npm install --save express`
+
+Create `app.js` in the root folder of our project.
 
 ```js
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 9000
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -448,9 +454,7 @@ app.listen(port, function () {
 })
 ```
 
-Run with `$ node script.js`
-
-Here is the [generator](https://expressjs.com/en/starter/generator.html). Note the directory structure and the use of [Jade](http://learnjade.com) as a template tool. Here's a [Jade converter](http://www.html2jade.org). Note: Jade has been renamed to Pug due to a software trademark claim.
+Run with `$ node app.js`
 
 We will be using HTML [static](https://expressjs.com/en/starter/static-files.html) files in our exercise.
 
@@ -460,11 +464,11 @@ Add to app.js:
 app.use(express.static('public'))
 ```
 
-Note that we have to stop and start the server in order for chnages to take place.
+Note that we have to stop and start the server whenever we change app.js.
 
 ##CRUD
 
-CRUD is an acronym for Create, Read, Update and Delete. It is a set of operations we get servers to execute (POST, GET, PUT and DELETE respectively). This is what each operation does:
+CRUD is an acronym for Create, Read, Update and Delete. It is a set of operations we get servers to execute (using the http verbs POST, GET, PUT and DELETE respectively). This is what each operation does:
 
 * Create (POST) - Make something
 * Read (GET)_- Get something
@@ -472,6 +476,10 @@ CRUD is an acronym for Create, Read, Update and Delete. It is a set of operation
 * Delete (DELETE)- Remove something
 
 In Express, we handle a GET request with the get method: `app.get(path, callback)`
+
+Our current file has an example:
+
+`app.get('/', (req, res) => res.send('Hello World!'))`
 
 The first argument, path, is the path of the GET request. It’s anything that comes after your domain name.
 
@@ -495,7 +503,7 @@ app.get('/', (req, res) => {
 
 __dirname is directory that contains the JavaScript source code. 
 
-Create index.html in the top level
+Comment out the static directory app.use line and create index.html in the top level
 
 ```html
 <!DOCTYPE html>
@@ -510,29 +518,47 @@ Create index.html in the top level
 </html>
 ```
 
-Restart your server and refresh your browser. You should be able to see the results of your HTML file now.
+You should be able to see the HTML file now.
 
-We need to restart the server whenever you make a change to app.js. Let’s streamline it by creating an npm script in package.json:
+We need to restart the server whenever you make a change to app.js. Let’s streamline it by using nodemen.
 
-`"dev": "nodemon server.js"`
+`$ npm install -save-dev nodemon`
+
+To use nodemon we simply call it in the terminal with the name of our file:
+
+`nodemon app.js`
 
 Add a script to package.json:
 
 ```
-"dev": "nodemon server.js"
+"dev": "nodemon app.js"
 ```
 
 ##CRUD - CREATE
 The CREATE operation is performed only by the browser if a POST request is sent to the server. This POST request can triggered either with JavaScript or through a <form> element.
 
+Add the following to index.html
+
 ```
-  <form action="/entries" method="POST">
-    <input type="text" placeholder="label" name="label">
-    <input type="text" placeholder="header" name="header">
-    <textarea type="text" placeholder="content" name="content"></textarea>
-    <button type="submit">Submit</button>
-  </form>
+<form action="/entries" method="POST">
+  <input type="text" placeholder="label" name="label">
+  <input type="text" placeholder="header" name="header">
+  <textarea type="text" placeholder="content" name="content"></textarea>
+  <button type="submit">Submit</button>
+</form>
 ```
+
+```
+<style>
+  input, textarea {
+    display: block;
+    margin: 1rem;
+    width: 70%;
+  }
+</style>
+```
+
+Our form requires:
 
 1. An action attribute
 2. a method attribute
@@ -550,11 +576,13 @@ app.post('/entries', (req, res) => {
 })
 ```
 
-Refresh your browser then enter something into your form element. You should be able to see 'Hello' in your command line.
+Refresh your browser then enter something into your form element. You should  see 'Hello' in your command line.
 
 Express doesn’t handle reading data from the <form> element on it’s own. We have to add another package called body-parser to gain this functionality.
 
 `$ npm install body-parser --save`
+
+Make the following changes to app.js:
 
 ```
 const express = require('express')
@@ -566,7 +594,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 The urlencoded method within body-parser tells body-parser to extract data from the <form> element and add them to the body property in the request object.
 
-Now, you should be able to see everything in the form field within the req.body object. Try doing a console.log:
+Now, when you test your form, you should be able to see everything in the form field within the req.body object. Try doing a console.log:
 
 ```
 app.post('/entries', (req, res) => {
@@ -590,11 +618,11 @@ MongoClient.connect('link-to-mongodb', (err, database) => {
 })
 ```
 
-The next part is to get the correct link to our database. Most people store their databases on cloud services like MongoLab. We’re going to do same as well.
+The next part is to get the correct link to our database. For our first attempt we'll use a cloud service - [MongoLab](https://mlab.com).
 
-Create a free account with MongoLab. Once you’re done, create a new MongoDB Deployment and set the plan to sandbox.
+Create a free account with MongoLab. Once you’re done, create a new MongoDB database and set the plan to sandbox (free) and call it bcl.
 
-Once you’re done creating the deployment, head into it and create a database user and database password. Remember the database user and database password because you’re going to use it to connect the database you’ve just created.
+Once you’re done creating the deployment, click into it and create a database user and database password. Remember these because you’re going to use it to connect the database you’ve just created.
 
 Finally, grab the MongoDB url and add it to your MongoClient.connect method. Make sure you use your database user and password!
 
@@ -612,33 +640,32 @@ MongoClient.connect('mongodb://dannyboynyc:dd2345@ds139969.mlab.com:39969/bcl', 
 })
 ```
 
-We’re done setting up MongoDB. Now, let’s create a collection to store content for our application.
+We’re done setting up MongoDB. Start the server using `nodemon app.js` and make sure you don't get any errors.
 
-A collection is a named location to store data. 
+Now, let’s create a collection - a named location to store data - to store content for our application.
 
-We can create the collection by using the string entries while calling MongoDB’s db.collection() method. While creating the entries collection, we can also save our first entry into MongoDB with the save method simultaneously.
+We can create the collection by using the string `entries` while calling MongoDB’s db.collection() method. Since a collection is created if it doesn't already exist we can save our first entry into the database while using the `save` method.
 
-Once we’re done saving, we have to redirect the user somewhere (or they’ll be stuck waiting forever for our server to move). In this case, we’re going to redirect them back to /, which causes their browsers to reload.
+Also, once we’re done saving, we have to redirect the user somewhere (or they’ll be stuck waiting for our server to go the `/entries` which doesn't exist except as a post route). In this case, we’re going to redirect them back to `/`.
 
 ```js
 app.post('/entries', (req, res) => {
   db.collection('entries').save(req.body, (err, result) => {
     if (err) return console.log(err)
-
     console.log('saved to database')
     res.redirect('/')
   })
 })
 ```
 
-Now, if you enter something into the <form> element, you’ll be able to see an entry in your MongoDB collection.
+Now enter something into the <form> element and you’ll be able to see an entry in your MongoDB collection.
 
 ####Showing entries to users
 
 We have to do two things to show the entries stored in MongoLab to our users.
 
 1. Get entries from MongoLab
-2. Use a template engine to display the entries
+2. Use a some form of dynamic html (a template engine) to display the entries
 
 We can get the entries from MongoLab by using the find method that’s available in the collection method.
 
@@ -650,9 +677,9 @@ app.get('/', (req, res) => {
 })
 ```
 
-The find method returns a cursor (A Mongo Object) that probably doesn’t make sense if you console.log it out.
+The find method returns a cursor (A Mongo Object) that probably doesn’t make sense when you console.log it out.
 
-The good news is, this cursor object contains all entries from our database. It also contains a bunch of other properties and methods that allow us to work with data easily. One such method is the toArray method.
+Yet this cursor object contains all entries from our database. It also contains a bunch of other properties and methods that allow us to work with data easily. One such method is the toArray method.
 
 The toArray method takes in a callback function that allows us to do stuff with entries we retrieved from MongoLab. Let’s try doing a console.log() for the results and see what we get!
 
@@ -666,11 +693,13 @@ app.get('/', (req, res) => {
 })
 ```
 
-You now see an array of entries. We’ve completed the first part – getting data from MongoLab. The next part is to generate a HTML that contains all our entries.
+You now see an array of entries in the terminal. 
 
-We can’t serve our index.html file and expect entries to magically appear because there’s no way to add dynamic content to a HTML file. What we can do instead, is to use template engines to help us out. Some popular template engines include Jade/pug, Embedded JavaScript and Nunjucks.
+Next part we generate HTML that contains all our entries.
 
-For this tutorial, we’re going to use Embedded JavaScript (ejs) as our template engine because it’s the easiest to start with. You’ll find it familiar from the get-go since you already know HTML and JavaScript.
+We can’t serve our index.html file and expect entries to magically appear because there’s no way to add dynamic content to a plain HTML file. What we can do instead, is to use template engines to help us out. Some popular template engines include Jade/pug, Embedded JavaScript and Nunjucks.
+
+For this tutorial, we’re going to use Embedded JavaScript (ejs) as our template engine because it’s the easiest to start with.
 
 We can use EJS by first installing it, then setting the view engine in Express to ejs.
 
@@ -678,7 +707,7 @@ We can use EJS by first installing it, then setting the view engine in Express t
 
 `app.set('view engine', 'ejs')`
 
-Once the view engine is set, we can begin generating the HTML with our entries. This process is also called rendering. We can use the render object built into the response object render to do so. It has the following syntax:
+Once the view engine is set, we can begin rendering the HTML with our entries using the render object built into the response object render. It has the following syntax:
 
 `res.render(view, locals)`
 
@@ -693,43 +722,56 @@ mkdir views
 touch views/index.ejs
 ```
 
-Now, place the following code within index.ejs.
+Now, copy the contents of index.html into index.ejs and add.
 
 ```
+<div>
   <% for(var i=0; i<entries.length; i++) { %>
     <h2><%= entries[i].label %></h2>
     <p><%= entries[i].content %></p>
   <% } %>
+</div>
 ```
 
 In EJS, you can write JavaScript within <% and %> tags. You can also output JavaScript as strings if you use the <%= and %> tags.
 
 Here, you can see that we’re basically looping through the entries array and create strings with entries[i].name and entries[i].content.
 
-One more thing to do before we move on from the index.ejs file. Remember to copy the <form> element from the index.html file into this file as well. The complete index.ejs file so far should be:
+The complete index.ejs file so far should be:
 
 ```
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Testing</title>
-</head>
-<body>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>MY APP</title>
+    <style>
+      input, textarea {
+        display: block;
+        margin: 1rem;
+        width: 70%;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Testing 1 2 3</p>
 
-  <% for(var i=0; i<entries.length; i++) { %>
-    <h2><%= entries[i].label %></h2>
-    <p><%= entries[i].content %></p>
-  <% } %>
+    <form action="/entries" method="POST">
+      <input type="text" placeholder="label" name="label">
+      <input type="text" placeholder="header" name="header">
+      <textarea type="text" placeholder="content" name="content"></textarea>
+      <button type="submit">Submit</button>
+    </form>
 
-  <form action="/entries" method="POST">
-    <input type="text" placeholder="label" name="label">
-    <input type="text" placeholder="header" name="header">
-    <textarea type="text" placeholder="content" name="content"></textarea>
-    <button type="submit">Submit</button>
-  </form>
-</body>
-</html>
+    <div>
+      <% for(var i=0; i<entries.length; i++) { %>
+      <h2><%= entries[i].label %></h2>
+      <p><%= entries[i].content %></p>
+      <% } %>
+    </div>
+
+  </body>
+  </html>
 ```
 
 Finally, we have to render this index.ejs file when handling the GET request. Here, we’re setting the results (an array) as the entries array we used in index.ejs above.
