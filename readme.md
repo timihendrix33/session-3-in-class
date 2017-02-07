@@ -184,7 +184,7 @@ Hide the nav-liks initially on small screens while maintaining the flex display 
   }
 ```
 
-Show the logo in small screens to use as a button (e.g. hamburger icon) to show the menu:
+Show the logo in small screens to use as a button (e.g. hamburger icon) and hide it on wide screens:
 
 ```css
 .logo {
@@ -207,6 +207,7 @@ Make clicking on the logo show the menu on narrow screens:
 $0.classList
 
 window.matchMedia('only screen and (max-width: 700px)')
+
 window.matchMedia('only screen and (max-width: 700px)').matches
 ```
 
@@ -396,7 +397,7 @@ Add source map support and compile to its own directory:
     "babel": "babel public/js/main.js --watch --source-maps --out-file public/js/min/main-compiled.js",
 ```
 
-Change the link to the js in index.html to point to the new file.
+Change the link to the main.js in index.html to point to the new file.
 
 `<script src="js/min/main-compiled.js"></script>`
 
@@ -410,7 +411,7 @@ A simple node.js [server](https://nodejs.org/en/about/).
 
 Note the use of const, template strings, arrow functions and the request and response variables.
 
-Save this as script.js in our basic-dom folder and run it using `node script.js`
+DEMO: Save this as script.js in the basic-dom folder and run it using `node script.js`
 
 ```js
 const http = require('http');
@@ -436,7 +437,7 @@ The server we are using (browser sync's) won't cut it when it comes to all the f
 
 Express is a framework for building web applications on top of Node.js. It simplifies the server creation process that is already available in Node and allows you to use JavaScript as your server-side language.
 
-Aside - Here is the [generator](https://expressjs.com/en/starter/generator.html). Note the directory structure and the use of [Jade](http://learnjade.com) as a template tool. Here's a [Jade converter](http://www.html2jade.org). Note: Jade has been renamed to Pug due to a software trademark claim.
+Aside: Here is the [generator](https://expressjs.com/en/starter/generator.html). Note the directory structure and the use of [Jade](http://learnjade.com) as a template tool. Here's a [Jade converter](http://www.html2jade.org). Note: Jade has been renamed to Pug due to a software trademark claim.
 
 Let's look at the canonical "Hello world" [example](https://expressjs.com/en/starter/hello-world.html).
 
@@ -452,8 +453,11 @@ const port = 9000
 
 app.get('/', (req, res) => res.send('Hello World!')) // our first route
 
-app.get('/test', function(){
-  res.send(`<h1>Testing</h1><p>Just a quick test of routing.</p>`)
+app.get('/watchlist', function(req, res){
+  res.send(`
+    <h1>Watchlist</h1>
+    <p>Commentary on Watchlists will go here.</p>
+    `)
 })
 
 app.listen(port, function () {
@@ -463,15 +467,57 @@ app.listen(port, function () {
 
 Run with `$ node app.js`
 
-We will be using HTML [static](https://expressjs.com/en/starter/static-files.html) files in our exercise.
+Note the routing above. Change the second route to include a variable:
 
-Add to app.js:
+```
+app.get('/entry/:name?', function(req, res){
+  let name = req.params.name
+  res.send(`
+    <h1>${name}</h1>
+    <p>Commentary on ${name} will go here.</p>
+    `)
+})
+```
+
+Test in the browser after restart: `http://localhost:9000/entry/watchlist`.
+
+Multiple parameters are common:
+
+```
+app.get('/entry/:name?/:link?', function(req, res){
+  let name = req.params.name
+  let hashlink = `#${req.params.link}`
+  res.send(`
+    <h1>${name}</h1>
+    <p>Commentary on ${name} will go here.</p>
+    <p>${hashlink}
+    `)
+})
+```
+
+Test in the browser after restart: `http://localhost:9000/entry/watchlist/test`.
+
+Add this after the last route:
+
+```
+app.get('*', function(req, res){
+  res.send(`
+    <h1>Page not found</h1>
+    `)
+})
+```
+
+Note: We will eventually be using [static](https://expressjs.com/en/starter/static-files.html) files in our exercise.
+
+Add to app.js (above the app.get... line):
 
 ```
 app.use(express.static('public'))
 ```
 
-Note that we have to stop and start the server whenever we change app.js.
+Note again that we have to stop and start the server whenever we change app.js.
+
+Comment out `app.use(express.static('public'))` - we'll make use of this later.
 
 ##CRUD
 
@@ -482,7 +528,7 @@ CRUD is an acronym for Create, Read, Update and Delete. It is a set of operation
 * Update (PUT) - Change something
 * Delete (DELETE)- Remove something
 
-In Express, we handle a GET request with the get method: `app.get(path, callback)`
+As we have seen, in Express, we handle a GET request with the get method: `app.get(path, callback)`
 
 Our current file has an example:
 
@@ -504,13 +550,14 @@ To do so, we use the sendFile method that’s provided by the res object.
 
 ```
 app.get('/', (req, res) => {
+  // console.log(__dirname)
   res.sendFile(__dirname + '/index.html')
 })
 ```
 
 __dirname is directory that contains the JavaScript source code. 
 
-Comment out the static directory app.use line and create index.html in the top level
+Make sure you've commented out the static directory app.use line and create index.html in the top level
 
 ```html
 <!DOCTYPE html>
@@ -535,11 +582,7 @@ To use nodemon we simply call it in the terminal with the name of our file:
 
 `nodemon app.js`
 
-Add a script to package.json:
-
-```
-"dev": "nodemon app.js"
-```
+We no longer need to resstart our server after making changes. Nodemon will watch for changes and take care of that for us.
 
 ##CRUD - CREATE
 The CREATE operation is performed only by the browser if a POST request is sent to the server. This POST request can triggered either with JavaScript or through a <form> element.
@@ -595,7 +638,7 @@ Make the following changes to app.js:
 const express = require('express')
 const bodyParser= require('body-parser')
 const app = express()
-
+const port = 9000
 app.use(bodyParser.urlencoded({extended: true}))
 ```
 
