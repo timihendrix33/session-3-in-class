@@ -1,5 +1,8 @@
 #Session 3
 
+##Homework
+* tbd
+
 ##GIT and GITHUB
 
 Since we've just created a nice reusable setup we should save it. 
@@ -74,7 +77,7 @@ git branch -d <branchname>
 
 Pushing Files to Remote Repos - Github
 
-Note: always create a .gitignore file to prevent local working / utility files from being pushed.
+Note: always create a .gitignore file to prevent local working/utility files from being pushed.
 
 ```
 .sass_cache
@@ -82,14 +85,14 @@ Note: always create a .gitignore file to prevent local working / utility files f
 node_modules
 ```
 
-* Log into Github, create and new repo and follow the instructions e.g.:
+* Log into Github, create and new repo and follow the instructions e.g.
 
 ```
 git remote add origin https://github.com/<nameofgithubrepo>
 git push -u origin master
 ```
 
-Finally - when downloading a github repo use the `clone` method to move it to your local disk while retaining the git history, branches, and etc.
+Finally - when downloading a github repo use the `clone` method to move it to your local disk while retaining the git history and branches.
 
 Use of MSCode as a Git / diff client?
 
@@ -789,6 +792,27 @@ app.get('/', (req, res) => {
 
 Now, refresh your browser and you should be able to see all entries.
 
+##Integration with the old site
+
+We need to move the old index.html into index.ejs and re-enable app.use static. 
+
+We can edit our package.json to proxy the browser sync to our express port number and add nodemon to our list of currently running scripts.
+
+```
+ "scripts": {
+    "watch-node-sass": "node-sass --watch scss/styles.scss --output public/css/  --source-map true",
+    "start": "browser-sync start --proxy 'localhost:9000' --browser \"google chrome\"  --files 'public'",
+    "boom!": "concurrently \"nodemon app.js\" \"npm run start\" \"npm run watch-node-sass\" "
+  },
+```
+
+You will have to comment out the onload function in order to see index.ejs:
+
+```
+// window.onload = function () {
+//   window.location.hash = '#watchlist' 
+// }
+```
 
 
 ###Notes

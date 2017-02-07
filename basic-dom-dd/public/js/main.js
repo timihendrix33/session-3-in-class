@@ -23,9 +23,9 @@ window.addEventListener('scroll', fixNav);
 
 
 const siteWrap = document.querySelector('.site-wrap');
-window.onload = function () {
-  window.location.hash = '#watchlist' 
-}
+// window.onload = function () {
+//   window.location.hash = '#watchlist' 
+// }
 
 window.onhashchange = function () {
   let newloc = window.location.hash;

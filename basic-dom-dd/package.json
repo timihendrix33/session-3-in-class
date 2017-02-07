@@ -4,13 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-css": "node-sass --include-path scss scss/styles.scss public/css/styles.css",
     "watch-node-sass": "node-sass --watch scss/styles.scss --output public/css/  --source-map true",
-    "start-test": "browser-sync start --directory --server --files '*.js, *.html, *.css'",
-    "start": "browser-sync start --browser \"google chrome\" --server 'public' --files 'public'",
+    "start": "browser-sync start --proxy 'localhost:9000' --browser \"google chrome\"  --files 'public'",
     "babel": "babel public/js/main.js --watch --source-maps --out-file public/js/min/main-compiled.js",
-    "dev": "nodemon app.js",
-    "boom!": "concurrently \"npm run start\" \"npm run watch-node-sass\"  \"npm run babel\" "
+    "boom!": "concurrently \"nodemon app.js\" \"npm run start\" \"npm run watch-node-sass\"  \"npm run babel\" "
   },
   "author": "",
   "license": "ISC",

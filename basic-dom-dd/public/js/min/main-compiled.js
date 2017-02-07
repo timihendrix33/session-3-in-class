@@ -20,9 +20,9 @@ function fixNav() {
 window.addEventListener('scroll', fixNav);
 
 var siteWrap = document.querySelector('.site-wrap');
-window.onload = function () {
-  window.location.hash = '#watchlist';
-};
+// window.onload = function () {
+//   window.location.hash = '#watchlist' 
+// }
 
 window.onhashchange = function () {
   var newloc = window.location.hash;
