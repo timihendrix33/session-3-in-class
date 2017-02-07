@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-css": "node-sass --include-path scss scss/styles.scss public/css/styles.css",
     "watch-node-sass": "node-sass --watch scss/styles.scss --output public/css/  --source-map true",
-    "start-test": "browser-sync start --directory --server --files '*.js, *.html, *.css'",
     "start": "browser-sync start --browser \"google chrome\" --server 'public' --files 'public'",
     "boom!": "concurrently \"npm run start\" \"npm run watch-node-sass\" "
   },

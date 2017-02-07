@@ -1,15 +1,26 @@
 #Session 3
 
+Today we continue to work with NPM, responsive design and start looking at Expressjs - exploring some of its capabilities.
+
 ##Homework
-* tbd
+* add Express to your homework project
+* upload a repo to github
+
+##NPM Review
+
+https://github.com/sass/node-sass#command-line-interface
+
+https://www.browsersync.io/docs/command-line
+
+
 
 ##GIT and GITHUB
 
 Since we've just created a nice reusable setup we should save it. 
 
-Git is a version control system originally invented for use developing Linux by Linus Torvalds. It is the standard version tool and integrates with Github to permit collaboration.
+Git - a version control system originally invented for use developing Linux by Linus Torvalds. It is the standard version tool and integrates with Github to permit collaboration.
 
-There is a handy and very simple tutorial for Git on [the Git Website](https://try.github.io/levels/1/challenges/1) which is highly recommended for newbies.
+There is a handy and very simple tutorial for Git on [the Git Website](https://try.github.io/levels/1/challenges/1) which is highly recommended for those new to git and github.
 
 1. make sure terminal is in the `basic-dom` directory using `cd` (drag-and-drop, copy paste)
 1. initialize the repo:
@@ -227,7 +238,7 @@ function showMenu(e){
 
 Add to `_nav.scss`:
 
-```
+```css
 .show #main ul {
   display: block !important;
 }
@@ -403,9 +414,9 @@ Change the link to the main.js in index.html to point to the new file.
 
 
 
-##NODE and Express JS
+#NODE and Express JS
 
-#NODE
+##NODE
 
 A simple node.js [server](https://nodejs.org/en/about/). 
 
@@ -555,7 +566,7 @@ app.get('/', (req, res) => {
 })
 ```
 
-__dirname is directory that contains the JavaScript source code. 
+__dirname is a global variable for the directory that contains the app.js. 
 
 Make sure you've commented out the static directory app.use line and create index.html in the top level
 
@@ -755,15 +766,9 @@ We can use EJS by first installing it, then setting the view engine in Express t
 
 `$ npm install ejs --save`
 
+and in app.js:
+
 `app.set('view engine', 'ejs')`
-
-Once the view engine is set, we can begin rendering the HTML with our entries using the render object built into the response object render. It has the following syntax:
-
-`res.render(view, locals)`
-
-The first parameter, views, is the name of the file we’re rendering. This file must be placed within a views folder.
-
-The second parameter, locals, is an object that passes data into the view.
 
 Let’s first create an index.ejs file within a views folder so we can start populating data.
 
@@ -785,7 +790,7 @@ Now, copy the contents of index.html into index.ejs and add.
 
 In EJS, you can write JavaScript within <% and %> tags. You can also output JavaScript as strings if you use the <%= and %> tags.
 
-Here, you can see that we’re basically looping through the entries array and create strings with entries[i].name and entries[i].content.
+Here, you can see that we’re basically looping through the entries array and creating strings with entries[i].label and entries[i].content.
 
 The complete index.ejs file so far should be:
 
