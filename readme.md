@@ -207,7 +207,6 @@ Make clicking on the logo show the menu on narrow screens:
 $0.classList
 
 window.matchMedia('only screen and (max-width: 700px)')
-
 window.matchMedia('only screen and (max-width: 700px)').matches
 ```
 
@@ -446,11 +445,16 @@ Install express using npm `$ npm install --save express`
 Create `app.js` in the root folder of our project.
 
 ```js
-const express = require('express')
-const app = express()
+const express = require('express') // require the npm library
+const app = express() // create a var for the app to be built using express
+// app is the global variable namespace for the program we are building
 const port = 9000
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => res.send('Hello World!')) // our first route
+
+app.get('/test', function(){
+  res.send(`<h1>Testing</h1><p>Just a quick test of routing.</p>`)
+})
 
 app.listen(port, function () {
   console.log(`Listening on port ${port}!`)
