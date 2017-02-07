@@ -288,6 +288,28 @@ window.onhashchange = function() {
 
 Other cleanup items?
 
+Make the menu overlay the content:
+
+```
+  ul {
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: none;
+    flex:1;
+    min-height: 2.25rem;
+    position: absolute;
+    background: #007eb6;
+    z-index: 1000;
+    width: 100%;
+    @media screen and (min-width: $break-two) {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+```
+
 Maximize space:
 
 ```
@@ -315,43 +337,7 @@ Maximize space:
 }
 ```
 
-Make the menu overlay the content:
-
-```
-  ul {
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: none;
-    flex:1;
-    min-height: 2.25rem;
-    position: absolute;
-    background: #007eb6;
-    z-index: 1000;
-    width: 100%;
-    @media screen and (min-width: $break-two) {
-      display: flex;
-      flex-direction: row;
-    }
-  }
-```
-
-
-##Remember the viewport META tag
-
-* Use the meta tag `<meta name="viewport" content="width=device-width, initial-scale=1.0">` to ensure this works on devices
-
-* Chrome device toolbar
-
-* http://daniel.deverell.com/barcap/public
-
-
-##SASS Links
-
-[The SASS Way](http://thesassway.com)
-
-[Responsive Design Patterns](https://bradfrost.github.io/this-is-responsive/)
+* Reminder - use the meta tag `<meta name="viewport" content="width=device-width, initial-scale=1.0">` to ensure this works on devices
 
 
 ##Babel
@@ -364,7 +350,7 @@ Install the dependencies babel-cli and babel-preset-es2015 and add presets to pa
 
 Here is the documentation for [babel-cli](https://babeljs.io/docs/usage/cli/)
 
-
+Add a babel script (note the output path references a min folder we need to create) and babel presets to package.json:
 
 ```
 {
@@ -375,7 +361,7 @@ Here is the documentation for [babel-cli](https://babeljs.io/docs/usage/cli/)
   "scripts": {
     "watch-node-sass": "node-sass --watch scss/styles.scss --output public/css/  --source-map true",
     "start": "browser-sync start --browser \"google chrome\" --server 'public' --files 'public'",
-    "babel": "babel public/js/main.js --watch --out-file public/js/main-compiled.js",
+    "babel": "babel public/js/main.js --watch --source-maps --out-file public/js/min/main-compiled.js",
     "boom!": "concurrently \"npm run start\" \"npm run watch-node-sass\" "
   },
   "author": "",
@@ -400,12 +386,6 @@ Add babel to our concurrent commands:
 
 ```
 "boom!": "concurrently \"npm run start\" \"npm run watch-node-sass\"  \"npm run babel\" "
-```
-
-Add source map support and compile to its own directory:
-
-```
-    "babel": "babel public/js/main.js --watch --source-maps --out-file public/js/min/main-compiled.js",
 ```
 
 Change the link to the main.js in index.html to point to the new file.
@@ -444,7 +424,7 @@ server.listen(port, hostname, () => {
 
 ##Express
 
-The server we are using (browser sync's) won't cut it when it comes to all the features needed to develop a website with all the http services we need.
+The server we are using (browser sync) won't cut it when it comes to all the features needed to develop a website with all the http services we need.
 
 Express is a framework for building web applications on top of Node.js. It simplifies the server creation process that is already available in Node and allows you to use JavaScript as your server-side language.
 
@@ -457,8 +437,10 @@ Install express using npm `$ npm install --save express`
 Create `app.js` in the root folder of our project.
 
 ```js
-const express = require('express') // require the npm library
-const app = express() // create a var for the app to be built using express
+const express = require('express') 
+// require the npm library
+const app = express() 
+// create a var for the app to be built using express
 // app is the global variable namespace for the program we are building
 const port = 9000
 
@@ -508,6 +490,20 @@ app.get('/entry/:name?/:link?', function(req, res){
 
 Test in the browser after restart: `http://localhost:9000/entry/watchlist/test`.
 
+##Nodemon
+
+We need to restart the server whenever we make a change to app.js. Let’s streamline it by using nodemon.
+
+`$ npm install -save-dev nodemon`
+
+To use nodemon we simply call it (instead of node) in the terminal with the name of our file:
+
+`nodemon app.js`
+
+We no longer need to restart our server after making changes. Nodemon will watch for changes and take care of that for us.
+
+##Test Nodemon
+
 Add this after the last route:
 
 ```
@@ -518,7 +514,11 @@ app.get('*', function(req, res){
 })
 ```
 
-Note: We will eventually be using [static](https://expressjs.com/en/starter/static-files.html) files in our exercise.
+Upon save nodemon should restart the server.
+
+===
+
+DEMO: We will eventually be using [static](https://expressjs.com/en/starter/static-files.html) files in our exercise.
 
 Add to app.js (above the app.get... line):
 
@@ -530,6 +530,8 @@ Note again that we have to stop and start the server whenever we change app.js.
 
 Comment out `app.use(express.static('public'))` - we'll make use of this later.
 
+===
+
 ##CRUD
 
 CRUD is an acronym for Create, Read, Update and Delete. It is a set of operations we get servers to execute (using the http verbs POST, GET, PUT and DELETE respectively). This is what each operation does:
@@ -539,25 +541,17 @@ CRUD is an acronym for Create, Read, Update and Delete. It is a set of operation
 * Update (PUT) - Change something
 * Delete (DELETE)- Remove something
 
-As we have seen, in Express, we handle a GET request with the get method: `app.get(path, callback)`
-
-Our current file has an example:
+As we have seen, in Express, we handle a GET request with the get method: 
 
 `app.get('/', (req, res) => res.send('Hello World!'))`
 
-The first argument, path, is the path of the GET request. It’s anything that comes after your domain name.
+The first argument,  /, is the path of the GET request (anything that comes after your domain name). For localhost:3000, the browser is actually looking for localhost:3000/. The path argument in this case is /.
 
-When we’re visiting localhost:3000, our browsers are actually looking for localhost:3000/. The path argument in this case is /.
+The second argument is a callback function that tells the server what to do when the path is matched. It takes in two arguments, a request object and a response object (req, res).
 
-The second argument is a callback function that tells the server what to do when the path is matched. It takes in two arguments, a request object and a response object:
+Let’s use the res object to serve an index.html page back to the browser. 
 
-```
-app.get('/', (req, res) => res.send('Hello World!'))
-```
-
-Let’s change our app so we serve an index.html page back to the browser instead. 
-
-To do so, we use the sendFile method that’s provided by the res object.
+sendFile is a method that’s provided by the res object:
 
 ```
 app.get('/', (req, res) => {
@@ -568,14 +562,14 @@ app.get('/', (req, res) => {
 
 __dirname is a global variable for the directory that contains the app.js. 
 
-Make sure you've commented out the static directory app.use line and create index.html in the top level
+Create index.html in the top level:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MY APP</title>
+  <title>Test</title>
 </head>
 <body>
   <p>Testing 1 2 3</p>
@@ -584,16 +578,6 @@ Make sure you've commented out the static directory app.use line and create inde
 ```
 
 You should be able to see the HTML file now.
-
-We need to restart the server whenever you make a change to app.js. Let’s streamline it by using nodemen.
-
-`$ npm install -save-dev nodemon`
-
-To use nodemon we simply call it in the terminal with the name of our file:
-
-`nodemon app.js`
-
-We no longer need to resstart our server after making changes. Nodemon will watch for changes and take care of that for us.
 
 ##CRUD - CREATE
 The CREATE operation is performed only by the browser if a POST request is sent to the server. This POST request can triggered either with JavaScript or through a <form> element.
@@ -615,13 +599,12 @@ Add the following to index.html
     display: block;
     margin: 1rem;
     width: 70%;
-  }
 </style>
 ```
 
 Our form requires:
 
-1. An action attribute
+1. an action attribute
 2. a method attribute
 3. and name attributes on all <input> elements within the form
 
